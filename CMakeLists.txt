@@ -58,6 +58,8 @@ ENDIF()
 
 PROJECT(Assimp VERSION 5.2.4)
 
+add_compile_options(/EHsc)
+
 # All supported options ###############################################
 
 OPTION( BUILD_SHARED_LIBS

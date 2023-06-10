@@ -94,6 +94,7 @@ void MSMSImporter::InternReadFile(const std::string &pFile, aiScene *pScene, [[m
     uint32_t vertexCount = 0;
     std::vector<aiVector3D> vertices;
     std::vector<aiVector3D> normals;
+    std::vector<aiColor4D> colors;
 
     uint32_t faceCount = 0;
     std::vector<aiFace> faces;
@@ -180,6 +181,20 @@ void MSMSImporter::InternReadFile(const std::string &pFile, aiScene *pScene, [[m
                     normal.y = std::stof(elems[4]);
                     normal.z = std::stof(elems[5]);
                     normals.push_back(normal);
+
+                    aiColor4D color;
+                    if(std::stoi(elems[8]) == 1)
+                    {
+                        color = {1.0f, 0.0f, 0.0f, 1.0f};
+                    }else if(std::stoi(elems[8]) == 2)
+                    {
+                        color = {0.0f, 1.0f, 0.0f, 1.0f};
+                    }else if(std::stoi(elems[8]) == 3)
+                    {
+                        color = {0.0f, 0.0f, 1.0f, 1.0f};
+                    }
+                    colors.push_back(color);
+
                 }else
                 {
                     std::vector<std::string> elems = split(line);
@@ -214,11 +229,13 @@ void MSMSImporter::InternReadFile(const std::string &pFile, aiScene *pScene, [[m
     mesh->mNumVertices = vertexCount;
     mesh->mVertices = new aiVector3D[mesh->mNumVertices];
     mesh->mNormals = new aiVector3D[mesh->mNumVertices];
+    mesh->mColors[0] = new aiColor4D[mesh->mNumVertices];
 
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         mesh->mVertices[i] = vertices[i];
-        mesh->mNormals[i] = normals[i];
+        mesh->mNormals[i] = normals[i]; 
+        mesh->mColors[0][i] = colors[i];
     }
 
     // Faces
